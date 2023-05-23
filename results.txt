@@ -1,0 +1,14 @@
+Level: easy
+Algorithm: B
+Average Time: 0.7220778560638428
+Standard Deviation Time: 1.251450489236277
+Average Nodes: 600850.2
+Standard Deviation Nodes: 1044264.7456088135
+
+Level: medium
+Algorithm: B
+Average Time: 2.5823910236358643
+Standard Deviation Time: 4.308975883287325
+Average Nodes: 2131479.4
+Standard Deviation Nodes: 3577262.0114800427
+
