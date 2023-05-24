@@ -20,6 +20,20 @@ Average time for level hard and algorithm B:
 	 215.92372288227082 seconds, 440.4066235599905 std seconds,
 	 82842612.7 nodes, 170112641.77572232 std nodes
 
+Level: easy
+Algorithm: B
+Average Time: 0.7220778560638428
+Standard Deviation Time: 1.251450489236277
+Average Nodes: 600850.2
+Standard Deviation Nodes: 1044264.7456088135
+
+Level: medium
+Algorithm: B
+Average Time: 2.5823910236358643
+Standard Deviation Time: 4.308975883287325
+Average Nodes: 2131479.4
+Standard Deviation Nodes: 3577262.0114800427
+
 
 
 

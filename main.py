@@ -1,4 +1,5 @@
 # Sudoku Puzzle with CSP
+import time
 from copy import deepcopy
 import random
 
@@ -81,7 +82,6 @@ class SudokuCSP:
                     neighbor.append(v)
             self.neighbors[var] = neighbor
 
-
     def constraintsInit(self):
 
         rows = [set(cell for cell in row if cell != 0) for row in self.sudoku]
@@ -119,11 +119,14 @@ class SudokuCSP:
 
             self.domains[row, col] = domain
 
+
 def find_box(row, col):
     box_row = row // 3
     box_col = col // 3
     box_number = (box_row * 3) + box_col
     return box_number
+
+
 def BackTrack(assignment: dict, csp: SudokuCSP):  # return true or false
 
     if len(assignment) == len(csp.variables):
@@ -160,7 +163,7 @@ def BackTrack(assignment: dict, csp: SudokuCSP):  # return true or false
 
     return False
 
-
+#Backtrack with Forward Checking
 def BackTrackFC(assignment: dict, csp: SudokuCSP):  # return true or false
 
     if len(assignment) == len(csp.variables):
@@ -183,15 +186,19 @@ def BackTrackFC(assignment: dict, csp: SudokuCSP):  # return true or false
             csp.constraints[1][c].add(d)
             csp.constraints[2][find_box(r, c)].add(d)
 
-            forward, neighbors = ForwardChecking(csp, assignment, var, d)
+            domains = deepcopy(csp.domains)
+
+            forward, neighbor = ForwardChecking(csp, assignment, var, d)
 
             if forward:
                 csp.expanded_nodes += 1
                 retval = BackTrackFC(assignment, csp)
                 if retval:
                     return True
-                ForwardBackup(csp, neighbors, var, d)
+                #ForwardBackup(csp, neighbor, var, d)
             # back up the domain
+
+            csp.domains = domains
 
             assignment.pop(var)
 
@@ -201,7 +208,7 @@ def BackTrackFC(assignment: dict, csp: SudokuCSP):  # return true or false
 
     return False
 
-
+#BackTrack with Forward Checking + 3Heuristic(MRV + Degree + LCV)
 def BackTrackFCH(assignment: dict, csp: SudokuCSP):  # return true or false
 
     if len(assignment) == len(csp.variables):
@@ -212,7 +219,7 @@ def BackTrackFCH(assignment: dict, csp: SudokuCSP):  # return true or false
 
     if len(vars) > 1:
         var = Degree(vars, csp)
-    else :
+    else:
         var = vars[0]
     r, c = var
 
@@ -229,15 +236,19 @@ def BackTrackFCH(assignment: dict, csp: SudokuCSP):  # return true or false
             csp.constraints[1][c].add(d)
             csp.constraints[2][find_box(r, c)].add(d)
 
-            forward, neighbors = ForwardChecking(csp, assignment, var, d)
+            domains = deepcopy(csp.domains)
+
+            forward, neighbor = ForwardChecking(csp, assignment, var, d)
 
             if forward:
                 csp.expanded_nodes += 1
                 retval = BackTrackFCH(assignment, csp)
                 if retval:
                     return True
-                ForwardBackup(csp, neighbors, var, d)
+                #ForwardBackup(csp, neighbor, var, d)
             # back up the domain
+
+            csp.domains = domains
 
             assignment.pop(var)
 
@@ -280,70 +291,53 @@ def LCV(var, assignment, csp):
 
     return values
 
-#tie-breaker for MRV, if there are more than one MRVs, then choose by degree heuristic
-#return the most
-def Degree(vars: list, csp: SudokuCSP):
 
+# tie-breaker for MRV, if there are more than one MRVs, then choose by degree heuristic
+# return the most
+def Degree(vars: list, csp: SudokuCSP):
     return min(vars, key=lambda var: len(csp.domains[var]))
 
 
-
-def ForwardBackup(csp: SudokuCSP, neighbors, var: tuple, val: int):
-    r, c = var
-    b = find_box(r, c)
-    for v in neighbors:
+def ForwardBackup(csp: SudokuCSP, neighbor, var: tuple, val: int):
+    for v in neighbor:
         # any variables connected to var, same row, same col or same box
         if val not in csp.domains[v]:
             csp.domains[v].append(val)
 
-
+"""
 def ForwardChecking(csp: SudokuCSP, assignment, var: tuple, val: int):
-    r, c = var
-    b = find_box(r, c)
-    neighbors = []
-    for v in csp.variables:
-        if v != var and Connected(var, v) and (v not in assignment):
+    neighbor = csp.neighbors[var]
+    temp = []
+    for v in neighbor:
+        if v not in assignment:
             if (len(csp.domains[v]) == 1) and (csp.domains[v][0] == val):
                 csp.forward_fails += 1
                 return False, None
-            neighbors.append(v)
-    
-    for v in neighbors:
+            temp.append(v)
+
+    for v in temp:
         if val in csp.domains[v]:
             csp.domains[v].remove(val)
-   
-    return True, neighbors
 
-
+    return True, temp
 """
+
+
 def ForwardChecking(csp: SudokuCSP, assignment, var: tuple, val: int):
-    r, c = var
-    b = find_box(r, c)
+    neighbor = csp.neighbors[var]
+    temp = []
+    for v in neighbor:
+        if v not in assignment and val in csp.domains[v]:
+            csp.domains[v].remove(val)
+            if len(csp.domains[v]) == 0:
+                csp.forward_fails += 1
+                return False, None
 
-    # first check the variables connected with the var, if there is no other value except for val, then It returns False(Fail)
-    domains = {}
-    
-    for v in csp.variables:
-        if v not in assignment and Connected(var, v):  # any variables connected to var
-            domain = []
 
-            for d in range(1,10):
-                if d not in csp.constraints[0][v[0]] and \
-                        d not in csp.constraints[1][v[1]] and \
-                        d not in csp.constraints[2][find_box(v[0], v[1])]:
-                    domain.append(d)
+    return True, temp
 
-            if len(domain) == 1 and domain[0] == val:
-                #print("Fail")
-                return False
 
-            #domains[v[0], v[1]] = domain
 
-    # update the domain
-    #csp.domains.update(domains)
-
-    return True
-"""
 
 def Connected(var1: tuple, var2: tuple):
     r1, c1 = var1
@@ -381,23 +375,33 @@ if __name__ == '__main__':
         sudoku = deepcopy(evil)
 
     csp = SudokuCSP(sudoku)
-    #print(len(csp.variables))
+    # print(len(csp.variables))
     assignment = {}
 
+    start_time = time.time()
     if mode == "B":
         BackTrack(assignment, csp)
     elif mode == "BFC":
         BackTrackFC(assignment, csp)
     elif mode == "BFCH":
         BackTrackFCH(assignment, csp)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
 
     for a in assignment:
         sudoku[a[0]][a[1]] = assignment[a]
 
     print(sudoku)
 
-    print(csp.expanded_nodes)
+    print("Time: ", elapsed_time)
 
-    print(csp.forward_fails)
+    print("Expaneded nodes:", csp.expanded_nodes)
+
+    print("Fails from forward", csp.forward_fails)
+
+    with open("BFC.txt", "a") as file:
+        file.write("Time: " + str(elapsed_time) + "\n")
+        file.write("Nodes: " + str(csp.expanded_nodes) + "\n")
+        file.write("\n")
 
     if verifying(csp.constraints): print("Success!")

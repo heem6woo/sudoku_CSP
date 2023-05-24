@@ -1,14 +1,21 @@
 Level: easy
-Algorithm: B
-Average Time: 0.7220778560638428
-Standard Deviation Time: 1.251450489236277
-Average Nodes: 600850.2
-Standard Deviation Nodes: 1044264.7456088135
+Algorithm: BFC
+Average Time: 0.2709060192108154
+Standard Deviation Time: 0.38761866297901315
+Average Nodes: 1483.68
+Standard Deviation Nodes: 2054.702775975153
 
 Level: medium
-Algorithm: B
-Average Time: 2.5823910236358643
-Standard Deviation Time: 4.308975883287325
-Average Nodes: 2131479.4
-Standard Deviation Nodes: 3577262.0114800427
+Algorithm: BFC
+Average Time: 0.45132779121398925
+Standard Deviation Time: 0.5603740878657838
+Average Nodes: 2471.92
+Standard Deviation Nodes: 2981.0431854637727
+
+Level: hard
+Algorithm: BFC
+Average Time: 32.40584942817688
+Standard Deviation Time: 30.238172111239596
+Average Nodes: 145482.64
+Standard Deviation Nodes: 132666.93638548529
 
