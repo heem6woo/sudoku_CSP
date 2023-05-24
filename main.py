@@ -299,31 +299,6 @@ def Degree(vars: list, csp: SudokuCSP):
     return min(vars, key=lambda var: len(csp.domains[var]))
 
 
-def ForwardBackup(csp: SudokuCSP, neighbor, var: tuple, val: int):
-    for v in neighbor:
-        # any variables connected to var, same row, same col or same box
-        if val not in csp.domains[v]:
-            csp.domains[v].append(val)
-
-"""
-def ForwardChecking(csp: SudokuCSP, assignment, var: tuple, val: int):
-    neighbor = csp.neighbors[var]
-    temp = []
-    for v in neighbor:
-        if v not in assignment:
-            if (len(csp.domains[v]) == 1) and (csp.domains[v][0] == val):
-                csp.forward_fails += 1
-                return False, None
-            temp.append(v)
-
-    for v in temp:
-        if val in csp.domains[v]:
-            csp.domains[v].remove(val)
-
-    return True, temp
-"""
-
-
 def ForwardChecking(csp: SudokuCSP, assignment, var: tuple, val: int):
     neighbor = csp.neighbors[var]
     temp = []
