@@ -12,7 +12,7 @@ def calculate_average_time(level, algorithm):
     total_time = 0.0
     total_nodes = 0
     it = 0
-    num_iterations = 30
+    num_iterations = 50
     sudoku = None
 
     times = []
@@ -78,10 +78,10 @@ def calculate_average_time(level, algorithm):
 
 # Main code
 if __name__ == '__main__':
-
-    levels = ['easy', 'medium', 'hard', 'evil']
-    #'B',,"BFCH"
-    algorithms = ['BFCH','BFC', 'B' ]
+    #'easy', 'medium', 'hard',
+    levels = [ 'evil']
+    #'B',,"BFCH"'BFCH', 'BFC',
+    algorithms = [ 'B']
     f = open("results.txt", "w")
     for algorithm in algorithms:
         for level in levels:

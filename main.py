@@ -55,6 +55,7 @@ evil = [[0, 1, 0, 0, 0, 0, 0, 0, 6],
         [0, 0, 0, 0, 0, 2, 0, 0, 1],
         [6, 0, 0, 0, 0, 0, 0, 3, 0]]
 
+zeros = [[0 for _ in range(9)] for _ in range(9)]
 
 class SudokuCSP:
     sudoku: list[list[int]] = []
@@ -373,6 +374,8 @@ if __name__ == '__main__':
 
     elif level == "evil":
         sudoku = deepcopy(evil)
+    elif level == "zeros":
+        sudoku = deepcopy(zeros)
 
     csp = SudokuCSP(sudoku)
     # print(len(csp.variables))
